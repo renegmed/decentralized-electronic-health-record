@@ -1,37 +1,63 @@
 import React from 'react';
-import mapboxgl from 'mapbox-gl';
+import MapGL, {Marker}  from 'react-map-gl';
 import "./App.css"
 
-const DEMO_API_KEY = 'pk.eyJ1IjoiYWh5bHRvbjE5IiwiYSI6ImNrN3FrYnFxOTAwOGUzc21jYWFtNzh4aG4ifQ.mXUbDQrYWm7TnEexZJ4f1Q';
+import data from './data/patient-data.json';
+import MARKER_STYLE from './marker-style';
 
-mapboxgl.accessToken = DEMO_API_KEY;
-
+const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN
+  
 class App extends React.Component {
   constructor(props) {
-      super(props);
-      this.state = {
-      lng: 5,
-      lat: 34,
-      zoom: 2
-    };
+    super(props);
+    this.state = {
+      viewport: {
+        latitude: 40.7485452,
+        longitude: -73.9879522,
+        zoom: 11,
+        bearing: 0,
+        pitch: 0
+      } 
+    };     
   }
- componentDidMount() {
-   // eslint-disable-next-line
-    const map = new mapboxgl.Map({ 
-    container: this.mapContainer,
-    style: 'mapbox://styles/mapbox/light-v10',
-    center: [this.state.lng, this.state.lat],
-    zoom: this.state.zoom
-  });
-}
+ 
+  _renderMarker(data, i) {
+    const {patientid, coordinates, status, reportdate} = data; 
+    return (
+      <Marker
+        key={i}
+        longitude={coordinates[0]}
+        latitude={coordinates[1]}
+        captureDrag={false}
+        captureDoubleClick={false} 
+      > 
+        <div className={status}>
+            <span>Patient: {patientid} &nbsp;</span> 
+            <span>Latitude: {coordinates[1]} &nbsp;</span>
+            <span>Longitude: {coordinates[0]} &nbsp;</span>  
+            <span>Condition: {status} &nbsp;</span>
+            <span>Report date: {reportdate}</span>
+        </div>  
+         
+     </Marker>
+    );
+  }
 
-render() {
-  return (
-    <div>
-      <div className="mapContainer" ref={el => this.mapContainer = el} />
-    </div>
-    )
-  }
+  render() {
+    return (
+      <MapGL
+        {...this.state.viewport}
+        width="100vw"
+        height="100vh"
+        mapStyle="mapbox://styles/mapbox/dark-v9"
+        onViewportChange={viewport => this.setState({viewport})}
+        mapboxApiAccessToken={MAPBOX_TOKEN}
+      > 
+        <style>{MARKER_STYLE}</style>
+        {data.map(this._renderMarker)}
+      </MapGL>
+    );
+  }  
 }
 
 export default App;

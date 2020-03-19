@@ -1,0 +1,5 @@
+[
+    {"patientid":"100001","coordinates":[-73.963742, 40.758639],"status": "level1","reportdate":"2020-03-01"}, 
+    {"patientid":"100022","coordinates":[-73.966156, 40.757317],"status": "level2","reportdate":"2020-03-01"},
+    {"patientid":"100026","coordinates":[-73.967692, 40.757177],"status": "level3","reportdate":"2020-03-01"}
+]
